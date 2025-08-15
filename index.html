@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Independence Day</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #3c0174, #1a0035);
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px;
+            gap: 40px;
+        }
+
+        /* Left text section */
+        .leftSection {
+            flex: 1 1 400px;
+            max-width: 600px;
+        }
+
+        #myHeading {
+            font-size: 3.5rem;
+            white-space: nowrap;
+            border-right: 3px solid orange;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        /* Glow effect after typing */
+        .glow {
+            animation: glowPulse 1.5s infinite alternate;
+        }
+
+        @keyframes glowPulse {
+            from {
+                text-shadow: 0 0 5px white, 0 0 10px white;
+            }
+
+            to {
+                text-shadow: 0 0 20px yellow, 0 0 30px orange;
+            }
+        }
+
+        .orange {
+            color: orange;
+        }
+
+        .white {
+            color: white;
+            padding: 0 4px;
+        }
+
+        .green {
+            color: green;
+        }
+
+        .Introduction h2 {
+            margin-top: 20px;
+            font-size: 2rem;
+            color: #ffda77;
+        }
+
+        .Introduction div {
+            line-height: 1.6;
+            font-size: 1.2rem;
+        }
+
+        /* Right image section */
+        .rightSection {
+            flex: 1 1 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .rightSection img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 45%;
+        }
+
+        .rightSection img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Default responsive from your original code */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+
+            #myHeading {
+                font-size: 2.5rem;
+                white-space: normal;
+            }
+
+            .Introduction h2 {
+                font-size: 1.5rem;
+            }
+
+            .rightSection img {
+                margin-top: 20px;
+            }
+        }
+
+        /* Extra responsive improvements */
+        @media (max-width: 480px) {
+            #myHeading {
+                font-size: clamp(1.8rem, 8vw, 2.5rem);
+            }
+
+            .Introduction h2 {
+                font-size: clamp(1.2rem, 6vw, 1.5rem);
+            }
+
+            .Introduction div {
+                font-size: clamp(0.9rem, 4.5vw, 1rem);
+            }
+
+            .rightSection img {
+                width: clamp(150px, 40vw, 200px);
+                height: clamp(150px, 40vw, 200px);
+            }
+
+            .Button {
+                font-size: clamp(14px, 4vw, 16px);
+                padding: 8px 16px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .Button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: orange;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(235, 181, 82, 0.712);
+        }
+
+        .Button:hover {
+            background-color: orange;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.8);
+        }
+
+        .Button a {
+            text-decoration: none;
+            color: white;
+            text-align: center;
+            display: inline-block;
+        }
+    </style>
+
+    <script>
+        window.onload = function () {
+            const words = [
+                { text: "Happy", class: "orange" },
+                { text: "Independence", class: "white" },
+                { text: "Day", class: "green" }
+            ];
+
+            const heading1 = document.getElementById("myHeading");
+            let wordIndex = 0;
+            let charIndex = 0;
+
+            function typeWriter() {
+                if (wordIndex < words.length) {
+                    let span;
+                    if (charIndex === 0) {
+                        span = document.createElement("span");
+                        span.className = words[wordIndex].class;
+                        heading1.appendChild(span);
+                    } else {
+                        span = heading1.lastChild;
+                    }
+
+                    span.textContent += words[wordIndex].text.charAt(charIndex);
+                    charIndex++;
+
+                    if (charIndex < words[wordIndex].text.length) {
+                        setTimeout(typeWriter, 100);
+                    } else {
+                        charIndex = 0;
+                        wordIndex++;
+                        if (wordIndex < words.length) {
+                            heading1.append(" ");
+                        }
+                        setTimeout(typeWriter, 300);
+                    }
+                } else {
+                    heading1.style.borderRight = "none";
+                    heading1.classList.add("glow");
+                }
+            }
+
+            typeWriter();
+        };
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="leftSection">
+            <h1 id="myHeading" class="myHeading"></h1>
+            <div class="Introduction">
+                <h2>About The Creator:</h2>
+                <div>
+                    Vansh is a passionate learner and creative thinker who loves exploring technology and experimenting
+                    with innovative ideas. From coding fun animations to designing interactive web pages, He believes
+                    in learning by doing. This project is a small step towards combining creativity with coding skills
+                    to make something inspiring.
+                    <div class="Button" id="onclick">
+                        <a href="independence.html" onclick="alert('Happy Independence Day')">Click Me To Move Further</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="rightSection">
+            <img src="images/Profile.jpg" alt="Profile">
+        </div>
+    </div>
+</body>
+
+</html>

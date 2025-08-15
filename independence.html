@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Independence Day</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #71d104b6, #3514018f);
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 10px;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        #myHeading {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            white-space: nowrap;
+            border-right: 3px solid orange;
+            display: inline-block;
+            overflow: hidden;
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Glow effect */
+        .glow {
+            animation: glowPulse 1.5s infinite alternate;
+        }
+
+        @keyframes glowPulse {
+            from {
+                text-shadow: 0 0 5px white, 0 0 10px white;
+            }
+            to {
+                text-shadow: 0 0 20px yellow, 0 0 30px orange;
+            }
+        }
+
+        .orange { color: orange; }
+        .white { color: white; padding: 0 4px; }
+        .green { color: green; }
+
+        #tagline {
+            font-size: clamp(1rem, 3.5vw, 1.5rem);
+            font-weight: 500;
+            color: #fffacd;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+            max-width: 90%;
+        }
+
+        .img {
+            max-width: 80%;
+            height: auto;
+            margin-top: 15px;
+            border-radius: 10px;
+            animation: imgGlow 2s infinite alternate;
+        }
+
+        /* Image glow effect */
+        @keyframes imgGlow {
+            from {
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.6),
+                            0 0 20px rgba(255, 165, 0, 0.6),
+                            0 0 30px rgba(19, 136, 8, 0.6);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(255, 255, 255, 1),
+                            0 0 40px rgba(255, 165, 0, 1),
+                            0 0 60px rgba(19, 136, 8, 1);
+            }
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+      
+    </style>
+</head>
+
+<body>
+    <canvas id="fireworks"></canvas>
+    <div class="container">
+        <h1 id="myHeading" class="myHeading"></h1>
+        <p id="tagline">Let’s celebrate the colors of freedom – Happy Independence Day!</p>
+        <img src="images/download.png" class="img" alt="Independence Day">
+    </div>
+
+    <script>
+        window.onload = function () {
+            const words = [
+                { text: "Happy", class: "orange" },
+                { text: "Independence", class: "white" },
+                { text: "Day", class: "green" }
+            ];
+
+            const heading1 = document.getElementById("myHeading");
+            let wordIndex = 0, charIndex = 0;
+
+            function typeWriter() {
+                if (wordIndex < words.length) {
+                    let span;
+                    if (charIndex === 0) {
+                        span = document.createElement("span");
+                        span.className = words[wordIndex].class;
+                        heading1.appendChild(span);
+                    } else {
+                        span = heading1.lastChild;
+                    }
+
+                    span.textContent += words[wordIndex].text.charAt(charIndex);
+                    charIndex++;
+
+                    if (charIndex < words[wordIndex].text.length) {
+                        setTimeout(typeWriter, 100);
+                    } else {
+                        charIndex = 0;
+                        wordIndex++;
+                        if (wordIndex < words.length) heading1.append(" ");
+                        setTimeout(typeWriter, 300);
+                    }
+                } else {
+                    heading1.style.borderRight = "none";
+                    heading1.classList.add("glow");
+                    startFireworks();
+                }
+            }
+            typeWriter();
+        };
+
+        function startFireworks() {
+            const canvas = document.getElementById("fireworks");
+            const ctx = canvas.getContext("2d");
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            class Particle {
+                constructor(x, y, color) {
+                    this.x = x; this.y = y; this.color = color;
+                    this.radius = 2;
+                    this.angle = Math.random() * 2 * Math.PI;
+                    this.speed = Math.random() * 5 + 2;
+                    this.alpha = 1;
+                    this.fade = Math.random() * 0.02 + 0.01;
+                }
+                update() {
+                    this.x += Math.cos(this.angle) * this.speed;
+                    this.y += Math.sin(this.angle) * this.speed;
+                    this.alpha -= this.fade;
+                }
+                draw() {
+                    ctx.globalAlpha = this.alpha;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+            }
+
+            const particles = [];
+            function createFirework(x, y) {
+                const colors = ["#ff9933", "#ffffff", "#138808"];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                for (let i = 0; i < 50; i++) {
+                    particles.push(new Particle(x, y, color));
+                }
+            }
+
+            function animate() {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p, i) => {
+                    p.update();
+                    p.draw();
+                    if (p.alpha <= 0) particles.splice(i, 1);
+                });
+                requestAnimationFrame(animate);
+            }
+
+            setInterval(() => {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height / 2;
+                createFirework(x, y);
+            }, 500);
+
+            animate();
+        }
+    </script>
+</body>
+</html>
